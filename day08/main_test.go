@@ -13,7 +13,7 @@ func TestPart1(t *testing.T) {
 		{
 			name:     "gets correct answer",
 			lines:    lines,
-			expected: 253603890,
+			expected: 17263,
 		},
 	}
 
@@ -35,7 +35,7 @@ func TestPart2(t *testing.T) {
 		{
 			name:     "gets correct answer",
 			lines:    lines,
-			expected: 253630098,
+			expected: 14631604759649,
 		},
 	}
 
