@@ -78,10 +78,9 @@ func part1(lines []string) int {
 	return sum
 }
 
-// TODO: Refactor to LCM
+// this is jank, and works because each starting node only ever runs into one
+// node that ends with Z? Is this intended?
 func part2(lines []string) int {
-	sum := 0
-
 	var directions []int
 	for _, char := range lines[0] {
 		if char == 'L' {
@@ -112,38 +111,62 @@ func part2(lines []string) int {
 		}
 	}
 
-	fmt.Println(startingNodes)
+	var allNodeZs []int
 
-	allEndWithZ := true
-	for {
-		for _, direction := range directions {
-			allEndWithZ = true
-			var newNodes []string
+	for _, node := range startingNodes {
+		next := node
+		var nodes []string
+		visited := map[string]int{}
+		var nodesEndingWithZCounts []int
+		cycled := false
+		count := 0
 
-			for _, node := range startingNodes {
-				nodes := nodeMap[node]
-				next := nodes[direction]
-				newNodes = append(newNodes, next)
+		for {
 
-				if next[2] != 'Z' {
-					// fmt.Println(next)
-					allEndWithZ = false
+			for i, direction := range directions {
+				nodes = nodeMap[next]
+				next = nodes[direction]
+				count++
+
+				_, exists := visited[next]
+
+				if exists && visited[next] == i {
+					cycled = true
+					break
+				}
+
+				visited[next] = i
+				if next[2] == 'Z' {
+					nodesEndingWithZCounts = append(nodesEndingWithZCounts, count)
 				}
 			}
 
-			startingNodes = newNodes
-			sum += 1
-
-			if allEndWithZ {
+			if cycled {
 				break
 			}
 		}
 
-		if allEndWithZ {
-			break
-		}
+		allNodeZs = append(allNodeZs, nodesEndingWithZCounts...)
 	}
 
-	fmt.Println(startingNodes)
-	return sum
+	return lcm(allNodeZs)
+}
+
+func lcm(nums []int) int {
+	lowestMultiple := 1
+
+	for _, n := range nums {
+		lowestMultiple = (lowestMultiple * n) / gcd(lowestMultiple, n)
+	}
+
+	return lowestMultiple
+}
+
+func gcd(a int, b int) int {
+	for b > 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
 }
