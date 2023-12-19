@@ -70,7 +70,7 @@ func parseInput(str string) [][]string {
 	var patterns [][]string
 	lastPatternSepIndex := 0
 	for i, line := range lines {
-		if line == "" && i != len(lines)-1 {
+		if line == "" {
 			patterns = append(patterns, lines[lastPatternSepIndex:i])
 			lastPatternSepIndex = i + 1
 		}
